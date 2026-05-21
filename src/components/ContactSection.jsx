@@ -1,6 +1,5 @@
 import { Mail, Phone, MapPin, Linkedin, Github, Send } from "lucide-react";
 import { useState, useRef } from "react";
-import emailjs from "emailjs-com";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -9,37 +8,52 @@ export const ContactSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    emailjs
-      .sendForm(
-        "service_4jql2jq",
-        "template_eaf6hkn",
-        formRef.current,
-        "spte_5eIipcuLvhpb"
-      )
-      .then(
-        () => {
-          toast({
-            title: "Message sent!",
-            description:
-              "Thank you for your message. I'll get back to you soon.",
-          });
-          formRef.current.reset();
-          setIsSubmitting(false);
-        },
-        (error) => {
-          console.log(error);
-          toast({
-            title: "Something went wrong!",
-            description: "Please try again later.",
-          });
-          setIsSubmitting(false);
-        }
-      );
+  const formData = {
+    name: formRef.current.name.value,
+    email: formRef.current.email.value,
+    message: formRef.current.message.value,
   };
+
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      toast({
+        title: "Message sent!",
+        description:
+          "Thank you for your message. I'll get back to you soon.",
+      });
+
+      formRef.current.reset();
+    } else {
+      toast({
+        title: "Something went wrong!",
+        description: data.error || "Please try again later.",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+
+    toast({
+      title: "Something went wrong!",
+      description: "Please try again later.",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   return (
     <section id="contact" className="py-24 px-4 relative bg-secondary/30">
       <div className="container mx-auto max-w-5xl">
