@@ -23,7 +23,7 @@ const projects = [
   githubUrl: "https://github.com/vashista143/recruitoo"
 },
   {
-  title: "AI Powered Expense Tracker",
+  title: "Expense Tracker",
   description:
     "A modern expense tracking web application with interactive financial analytics and smart insights. Users can manage income and expenses track cashflow categorize transactions and visualize spending patterns using Chart.js powered graphs and reports. Features include budgeting transaction history monthly analytics dark mode support and AI based spending insights for smarter financial management.",
   image: "projects/expensetracker.png",
